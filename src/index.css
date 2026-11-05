@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import "./styles/theme.css";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+
+:root {
+  font-family: "Geist Variable", Geist, ui-sans-serif, system-ui, sans-serif;
+  color: var(--foreground);
+  background: var(--background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--foreground);
+  background:
+    radial-gradient(ellipse at 50% -20%, rgb(249 115 22 / 6%), transparent 48%),
+    radial-gradient(ellipse at 100% 55%, rgb(234 88 12 / 4%), transparent 35%),
+    var(--background);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+::selection {
+  color: white;
+  background: rgb(249 115 22 / 35%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
