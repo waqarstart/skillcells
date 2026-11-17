@@ -6,7 +6,7 @@ import {
   useReducedMotion,
   useSpring,
 } from "motion/react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, NavLink } from "react-router";
 import logo from "../../assets/logo.png";
 
