@@ -6,9 +6,11 @@ import {
   useReducedMotion,
   useSpring,
 } from "motion/react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import {  Menu, X } from "lucide-react";
 import { Link, NavLink } from "react-router";
 import logo from "../../assets/logo.png";
+import { ui } from "@/styles/ui";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -32,9 +34,7 @@ function NavigationItem({ label, to, onClick }: NavigationItemProps) {
       end={to === "/"}
       onClick={onClick}
       className={({ isActive }) =>
-        `group relative inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none ${
-          isActive ? "text-secondary" : "text-navbar-foreground/80"
-        }`
+        cn(ui.navItem, isActive ? ui.navItemActive : ui.navItemIdle)
       }
     >
       {({ isActive }) => (
@@ -47,16 +47,7 @@ function NavigationItem({ label, to, onClick }: NavigationItemProps) {
           >
             {label}
           </motion.span>
-          <span
-            aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 rounded-full bg-secondary/0 blur-md transition-all duration-200 group-hover:bg-secondary/20 ${
-              isActive ? "bg-secondary/10" : ""
-            }`}
-          />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_0_18px_var(--secondary)] transition-opacity duration-200 group-hover:opacity-70 group-focus-visible:opacity-70"
-          />
+          {isActive && <span aria-hidden="true" className={ui.navItemActiveBg} />}
         </>
       )}
     </NavLink>
@@ -126,7 +117,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-navbar/85 text-navbar-foreground backdrop-blur-xl">
+      <header className={cn("sticky top-0 z-40 backdrop-blur-xl bg-white")}>
         <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
@@ -159,7 +150,7 @@ export default function Navbar() {
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
-            className="inline-flex size-10 items-center justify-center rounded-full text-navbar-foreground transition-colors hover:bg-secondary/15 hover:text-secondary focus-visible:outline-none focus-visible:shadow-[0_0_18px_var(--secondary)] md:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-secondary/10 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 md:hidden"
           >
             {menuOpen ? <X aria-hidden="true" className="size-5" /> : <Menu aria-hidden="true" className="size-5" />}
           </button>

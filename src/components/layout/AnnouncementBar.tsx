@@ -2,7 +2,8 @@ import { useState, type ElementType, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Sparkles, X } from "lucide-react";
 import { Link } from "react-router";
-
+import { ui } from "@/styles/ui";
+import { cn } from "@/lib/utils";
 
 const Marquee = "marquee" as ElementType;
 type MarqueeElement = HTMLElement & { start: () => void; stop: () => void };
@@ -25,7 +26,7 @@ export default function AnnouncementBar() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="relative z-50 overflow-hidden bg-[#FA9054] text-announcement-foreground"
+          className={cn("relative z-50 overflow-hidden", ui.announcement)}
         >
           <Marquee
             direction="left"
@@ -62,7 +63,7 @@ export default function AnnouncementBar() {
             type="button"
             aria-label="Dismiss special offer"
             onClick={() => setIsVisible(false)}
-            className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full p-1 text-announcement-foreground/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:shadow-[0_0_14px_var(--secondary)]"
+            className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full p-1 text-announcement-foreground/70 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
           >
             <X aria-hidden="true" className="size-4" />
           </button>

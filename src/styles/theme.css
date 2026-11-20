@@ -1,37 +1,49 @@
 :root {
   color-scheme: light;
-  --background: #ffffff;
-  --foreground: #111111;
 
-  /* Change these values to re-theme the complete site. */
-  --primary: #c2410c;
-  --primary-foreground: #ffffff;
-  --secondary: #f97316;
-  --secondary-foreground: #171717;
-  --tertiary: #fb923c;
-  --tertiary-foreground: #171717;
+  /*
+   * Brand palette — change these three to re-theme the whole app.
+   * Pure White · Royal Blue · Charcoal
+   */
+  --color-pure-white: #ffffff;
+  --color-royal-blue: #4169e1;
+  --color-charcoal: #2c2c2c;
 
-  --surface: #f4f4f5;
-  --surface-foreground: #18181b;
-  --navbar: #F7E5D6;
-  --navbar-foreground: #171717;
-  --announcement: #050505;
-  --announcement-foreground: #ffffff;
-  --footer: var(--navbar);
-  --footer-foreground: var(--navbar-foreground);
+  --background: var(--color-pure-white);
+  --foreground: var(--color-charcoal);
 
-  --card: #ffffff;
-  --card-foreground: var(--surface-foreground);
-  --popover: var(--card);
-  --popover-foreground: var(--surface-foreground);
-  --accent: var(--tertiary);
-  --accent-foreground: var(--tertiary-foreground);
-  --muted: #f4f4f5;
-  --muted-foreground: #52525b;
-  --destructive: #fb7185;
-  --border: #e4e4e7;
+  /* Buttons / CTAs / accents → Royal Blue */
+  --primary: var(--color-royal-blue);
+  --primary-foreground: var(--color-pure-white);
+  --secondary: var(--color-royal-blue);
+  --secondary-foreground: var(--color-pure-white);
+  --tertiary: #5b7ff0;
+  --tertiary-foreground: var(--color-pure-white);
+
+  --surface: var(--color-pure-white);
+  --surface-foreground: var(--color-charcoal);
+
+  /* Headers (navbar / footer / announcement) → Royal Blue */
+  --navbar: var(--color-royal-blue);
+  --navbar-foreground: var(--color-pure-white);
+  --announcement: var(--color-royal-blue);
+  --announcement-foreground: var(--color-pure-white);
+  --footer: var(--color-royal-blue);
+  --footer-foreground: var(--color-pure-white);
+
+  /* Cards → Royal Blue */
+  --card: var(--color-royal-blue);
+  --card-foreground: var(--color-pure-white);
+  --popover: var(--color-pure-white);
+  --popover-foreground: var(--color-charcoal);
+  --accent: var(--color-royal-blue);
+  --accent-foreground: var(--color-pure-white);
+  --muted: #f0f3fa;
+  --muted-foreground: #5a5a5a;
+  --destructive: #e11d48;
+  --border: #d8e0f5;
   --input: var(--border);
-  --ring: var(--primary);
+  --ring: var(--color-royal-blue);
   --radius: 1rem;
 }
 

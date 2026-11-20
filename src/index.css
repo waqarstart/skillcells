@@ -29,10 +29,7 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--foreground);
-  background:
-    radial-gradient(ellipse at 50% -20%, rgb(249 115 22 / 6%), transparent 48%),
-    radial-gradient(ellipse at 100% 55%, rgb(234 88 12 / 4%), transparent 35%),
-    var(--background);
+  background: var(--background);
 }
 
 button,
@@ -45,8 +42,8 @@ button {
 }
 
 ::selection {
-  color: white;
-  background: rgb(249 115 22 / 35%);
+  color: var(--color-pure-white);
+  background: color-mix(in srgb, var(--color-royal-blue) 35%, transparent);
 }
 
 #root {

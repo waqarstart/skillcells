@@ -126,7 +126,7 @@ export default function ClassSchedule() {
         </header>
 
         <div className="schedule-table-wrap" role="region" aria-label="Class schedule table" tabIndex={0}>
-          <table className="schedule-table" aria-label="Corvit Lahore class schedule">
+          <table className="schedule-table" aria-label="KanzulIslam Lahore class schedule">
             <thead>
               <tr>
                 <th scope="col" className="schedule-number">#</th>

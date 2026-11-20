@@ -3,6 +3,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { Link, useParams } from "react-router";
 import { getCourseBySlug } from "@/lib/courses";
 import QuickInquiry from "./QuickInquiry";
+import { ui } from "@/styles/ui";
+import { cn } from "@/lib/utils";
 
 export default function CourseDetail() {
   const { slug } = useParams();
@@ -11,11 +13,11 @@ export default function CourseDetail() {
 
   if (!course) {
     return (
-      <section className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-start justify-center px-4 py-20 sm:px-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">Course not found</p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">We couldn’t find that course.</h1>
+      <section className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-start justify-center px-4 py-4 sm:px-6">
+        <p className={ui.eyebrow}>Course not found</p>
+        <h1 className={cn("mt-3", ui.headingSm)}>We couldn’t find that course.</h1>
         <p className="mt-4 leading-7 text-muted-foreground">Browse the course catalog to see all available training paths.</p>
-        <Link to="/courses" className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-secondary hover:text-secondary-foreground">
+        <Link to="/courses" className={cn("mt-7", ui.buttonSm)}>
           <ArrowLeft aria-hidden="true" className="size-4" /> Back to courses
         </Link>
       </section>
@@ -31,7 +33,10 @@ export default function CourseDetail() {
         </div>
 
         <div className="mx-auto max-w-7xl">
-          <Link to="/courses" className="group inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-primary/10 hover:text-primary">
+          <Link
+            to="/courses"
+            className="group inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground transition hover:border-secondary/40 hover:text-secondary"
+          >
             <ArrowLeft aria-hidden="true" className="size-4 transition-transform group-hover:-translate-x-0.5" />
             All courses
           </Link>
@@ -45,18 +50,18 @@ export default function CourseDetail() {
               <span className="inline-flex rounded-full bg-secondary/10 px-3.5 py-1.5 text-xs font-semibold text-secondary">
                 {course.category}
               </span>
-              <h1 className="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="mt-5 max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 {course.title}
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
                 {course.shortIntro}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <Link to="/contact" className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-secondary hover:text-secondary-foreground">
+                <Link to="/contact" className={cn("group", ui.button)}>
                   Ask about this course
                   <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
-                <a href="#course-overview" className="inline-flex items-center rounded-full bg-surface px-6 py-3.5 text-sm font-semibold text-foreground transition hover:bg-primary/10 hover:text-primary">
+                <a href="#course-overview" className={ui.buttonGhost}>
                   Explore course details
                 </a>
               </div>
@@ -66,11 +71,11 @@ export default function CourseDetail() {
               initial={reduceMotion ? false : { opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: reduceMotion ? 0 : 0.08 }}
-              className="relative min-h-[280px] overflow-hidden rounded-[1.75rem] shadow-[0_28px_70px_-28px_rgba(0,0,0,0.48)] sm:min-h-[380px] lg:min-h-[440px]"
+              className="relative min-h-[280px] overflow-hidden rounded-[1.75rem] shadow-[0_28px_70px_-28px_rgba(65,105,225,0.4)] sm:min-h-[380px] lg:min-h-[440px]"
             >
               <img src={course.image} alt={course.imageAlt} className="absolute inset-0 size-full object-cover" />
-              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-              <span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold text-foreground shadow-sm backdrop-blur-sm">
+              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-tr from-secondary/30 via-transparent to-white/10" />
+              <span className={cn("absolute bottom-5 left-5 shadow-sm", ui.badge)}>
                 Kanzul Islam · Learn by doing
               </span>
             </motion.div>
@@ -78,7 +83,7 @@ export default function CourseDetail() {
         </div>
       </section>
 
-      <section id="course-overview" className="scroll-mt-24 bg-surface/60 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <section id="course-overview" className={cn("scroll-mt-24", ui.sectionAlt, "py-16 lg:py-4")}>
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           <motion.article
             initial={reduceMotion ? false : { opacity: 0, y: 18 }}
@@ -86,14 +91,14 @@ export default function CourseDetail() {
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.4 }}
           >
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">Course overview</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Build skills for a changing industry.</h2>
+            <p className={ui.eyebrow}>Course overview</p>
+            <h2 className={cn("mt-3", ui.headingSm)}>Build skills for a changing industry.</h2>
             <p className="mt-5 text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
               {course.introduction}
             </p>
 
             <div className="mt-9">
-              <h3 className="text-xl font-bold tracking-tight sm:text-2xl">{course.whyTitle}</h3>
+              <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{course.whyTitle}</h3>
               <div className="mt-4 space-y-4 text-base leading-7 text-muted-foreground">
                 {course.whyParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               </div>
@@ -105,20 +110,20 @@ export default function CourseDetail() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.4, delay: reduceMotion ? 0 : 0.06 }}
-            className="h-fit rounded-3xl bg-card p-6 shadow-[0_20px_54px_-30px_rgba(0,0,0,0.35)] sm:p-8"
+            className={cn("h-fit rounded-3xl p-6 sm:p-8", ui.cardStatic)}
           >
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-secondary">What you’ll explore</p>
+            <p className={ui.cardEyebrow}>What you’ll explore</p>
             <ul className="mt-6 space-y-4">
               {course.topics.map((topic) => (
-                <li key={topic} className="flex items-start gap-3 text-sm leading-6 text-foreground/90 sm:text-base">
-                  <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <li key={topic} className="flex items-start gap-3 text-sm leading-6 text-card-foreground/90 sm:text-base">
+                  <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-foreground">
                     <Check aria-hidden="true" className="size-4" />
                   </span>
                   <span>{topic}</span>
                 </li>
               ))}
             </ul>
-            <Link to="/contact" className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-secondary">
+            <Link to="/contact" className={cn("group mt-8 inline-flex items-center gap-2 text-sm font-semibold", ui.linkOnDark)}>
               Talk to us about this course
               <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
@@ -126,20 +131,7 @@ export default function CourseDetail() {
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        {/* <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 rounded-3xl bg-card p-7 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.3)] sm:p-10 lg:flex-row lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary">Ready to get started?</p>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">Take your next step with Kanzul Islam.</h2>
-            <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-              Contact our team to ask about course schedules, training options, and enrollment.
-            </p>
-          </div>
-          <Link to="/contact" className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-secondary hover:text-secondary-foreground">
-            Contact Kanzul Islam
-            <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link>
-        </div> */}
+      <section className="px-4 py-16 sm:px-6 lg:px-8 lg:py-4">
         <QuickInquiry />
       </section>
     </div>

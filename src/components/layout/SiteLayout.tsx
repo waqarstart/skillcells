@@ -2,10 +2,12 @@ import { Outlet } from "react-router";
 import AnnouncementBar from "./AnnouncementBar";
 import Navbar from './Navbar';
 import Footer from "./Footer";
+import { ui } from "@/styles/ui";
+import { cn } from "@/lib/utils";
 
 const SiteLayout = () => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className={cn("flex min-h-screen flex-col", ui.page)}>
       <AnnouncementBar />
       <Navbar />
 
