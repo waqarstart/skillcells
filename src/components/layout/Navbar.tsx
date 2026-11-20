@@ -117,8 +117,9 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={cn("sticky top-0 z-40 backdrop-blur-xl bg-white")}>
-        <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      {/* Brand bar: Logo | Project of K Group | Kanzul Islam Computer College | K */}
+      <div className="border-b border-border bg-white px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 py-3 sm:gap-6 lg:py-4">
           <Link
             to="/"
             onClick={closeMenu}
@@ -128,22 +129,40 @@ export default function Navbar() {
             <img
               src={logo}
               alt="Kanzul Islam"
-              className="h-10 w-28 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-11 sm:w-32"
+              className="size-14 object-contain transition-transform duration-300 group-hover:scale-105 sm:size-20 lg:size-24"
             />
           </Link>
-          <div className="flex flex-row gap-5">
+
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-3 sm:gap-6">
+            <p className="hidden shrink-0 text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground md:block lg:text-base">
+              Project of K Group
+            </p>
+            <span aria-hidden="true" className="hidden h-12 w-0.5 shrink-0 bg-secondary md:block lg:h-14" />
+            <p className="min-w-0 text-center text-base font-extrabold uppercase leading-tight tracking-wide text-secondary sm:text-xl md:text-left lg:text-3xl">
+              Kanzul Islam Computer College
+              <span className="mt-0.5 block text-[0.65rem] font-semibold tracking-[0.2em] text-muted-foreground sm:text-xs md:hidden">
+                Project of K Group
+              </span>
+            </p>
+          </div>
+
+          <span
+            aria-label="K Group"
+            role="img"
+            className="inline-flex size-12 shrink-0 items-center justify-center rounded-full border-4 border-secondary text-2xl font-black text-secondary sm:size-16 sm:text-3xl lg:size-20 lg:text-4xl"
+          >
+            K
+          </span>
+        </div>
+      </div>
+
+      <header className="sticky top-0 z-40 bg-white/95 px-4 shadow-[0_8px_24px_-18px_rgba(44,44,44,0.35)] backdrop-blur-xl sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between md:h-16 md:justify-center">
           <nav aria-label="Main navigation" className="hidden items-center gap-1 md:flex">
             {navItems.map((item) => <NavigationItem key={item.to} {...item} />)}
           </nav>
 
-          {/* <Link
-            to="/courses"
-            className="group hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-200 hover:-translate-y-1 hover:bg-secondary hover:text-secondary-foreground hover:shadow-[0_0_24px_color-mix(in_srgb,var(--secondary)_50%,transparent)] focus-visible:outline-none focus-visible:shadow-[0_0_24px_var(--secondary)] md:inline-flex"
-          >
-            Enroll now
-            <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link> */}
-</div>
+          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-foreground md:hidden">Menu</span>
           <button
             type="button"
             aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -167,15 +186,8 @@ export default function Navbar() {
               transition={{ duration: 0.22, ease: "easeInOut" }}
               className="overflow-hidden bg-navbar md:hidden"
             >
-              <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-3 sm:px-6">
+              <div className="mx-auto flex w-full max-w-7xl flex-col py-3">
                 {navItems.map((item) => <NavigationItem key={item.to} {...item} onClick={closeMenu} />)}
-                {/* <Link
-                  to="/courses"
-                  onClick={closeMenu}
-                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-secondary hover:text-secondary-foreground focus-visible:outline-none focus-visible:shadow-[0_0_18px_var(--secondary)]"
-                >
-                  Enroll now <ArrowUpRight aria-hidden="true" className="size-4" />
-                </Link> */}
               </div>
             </motion.nav>
           )}

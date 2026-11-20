@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router";
 
 const courseOptions = [
   "Artificial Intelligence",
@@ -51,28 +52,37 @@ export default function ContactUs() {
 
   return (
     <div className="overflow-hidden">
-      <section className="relative isolate bg-background px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
+      <section className="relative isolate bg-background px-4 pb-14 pt-8 sm:px-6 lg:px-8 lg:pb-20 lg:pt-10">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-8 md:grid-cols-2 lg:gap-12">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex min-h-[50dvh] flex-col justify-center md:min-h-[calc(100dvh-8rem)]"
+            className="flex flex-col justify-start"
           >
-            <p className={cn("mb-4", ui.eyebrow)}>Contact Kanzul Islam</p>
+            <p className={cn("mb-4", ui.eyebrow)}>About Kanzul Islam</p>
             <h1 className="max-w-xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
-              Let’s plan your next step.
+              Let's plan your next move!
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-              Ask us about a course, class schedule, or training option. Send an inquiry and our team will get back to you.
+              Whether you are starting your journey in IT or looking to advance your technical expertise, our admissions team at Kanzul Islam is ready to guide you. Reach out today to explore our hands-on courses, flexible class schedules, and personalized career pathways. Connect with us via phone, email, or visit our campus to take the first confident step toward your professional future.
             </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link to="/courses" className={cn("group", ui.button)}>
+                Explore our courses
+                <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </Link>
+              <Link to="/contact" className={ui.buttonGhost}>
+                Talk to our team
+              </Link>
+            </div>
           </motion.div>
 
-          <div className="relative h-[50dvh] w-full overflow-hidden rounded-3xl bg-muted shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] md:h-[calc(100dvh-8rem)]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[22rem] rounded-3xl bg-muted shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] ring-1 ring-black/5">
             <img
               src={contactHeroImage}
-              alt="Professional working with technology"
-              className="absolute inset-0 size-full object-cover object-center"
+              alt="Students learning in a computer lab"
+              className="absolute inset-0 h-full w-full object-cover object-center"
               loading="eager"
             />
           </div>
@@ -166,7 +176,7 @@ export default function ContactUs() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             className={cn("rounded-3xl p-6 sm:p-8 lg:p-10", ui.cardStatic)}
-           >
+          >
             <div className="mb-8">
               <p className={ui.cardEyebrow}>Quick inquiry</p>
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-card-foreground sm:text-3xl">

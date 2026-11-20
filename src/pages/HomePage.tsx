@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowUpRight,
@@ -9,13 +9,13 @@ import {
   Code2,
   Globe,
   Monitor,
-  Network,
   Quote,
-  ShieldCheck,
   UserRound,
+  Bot,
+  LayoutDashboard
 } from "lucide-react";
 import { Link } from "react-router";
-import DirectorsImage from "../assets/directorsImage.jpg";
+import DirectorsImage from "../assets/directorsImage3.jpg";
 import CmcLogo from "../assets/cmc.jpeg";
 import GcsLogo from "../assets/gcsLogo.png";
 import InfoCommLogo from "../assets/ict.png";
@@ -25,20 +25,21 @@ import QuickInquiry from "@/components/layout/QuickInquiry";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
 
-import MainDesktop from '@/assets/mainDesktop.jpeg';
-import MainTablet from '@/assets/mainTablet.png';
-import MainMobile from '@/assets/mainMobile.jpeg';
+// import MainDesktop from '@/assets/mainDesktop.jpeg';
+import MainDesktop from '@/assets/Build Your Future in IT.jpg';
+// import MainTablet from '@/assets/mainTablet.png';
+// import MainMobile from '@/assets/mainMobile.jpeg';
 
-import FullStackDesktop from '@/assets/fullStackDesktop.png'
-import FullStackTablet from '@/assets/fullStackTablet.jpeg'
+import FullStackDesktop from '@/assets/Full Stack Development Workspace.png'
+// import FullStackTablet from '@/assets/fullStackTablet.jpeg'
 import FullStackMobile from '@/assets/fullStackMobile.jpeg'
 
-import ArtificialIntelDesktop from '@/assets/artificialIntelDesktop.jpg'
-import ArtificialIntelTablet from '@/assets/artificialIntelTablet.jpeg'
+import ArtificialIntelDesktop from '@/assets/Artificial Intelligence Learning Lab.png'
+// import ArtificialIntelTablet from '@/assets/artificialIntelTablet.jpeg'
 import ArtificialIntelMobile from '@/assets/artificialIntelMobile.jpeg'
 
-import ITFundDesktop from '@/assets/itFundDesktop.jpeg'
-import ITFundTablet from '@/assets/itFundTablet.jpeg'
+import ITFundDesktop from '@/assets/Gemini_Generated_Image_7tdy8v7tdy8v7tdy.jpg'
+// import ITFundTablet from '@/assets/itFundTablet.jpeg'
 import ITFundMobile from '@/assets/itFundMobile.jpeg'
 
 
@@ -48,29 +49,38 @@ const mission =
 const vision =
   "Kanzul Islam is renowned worldwide for the quality of its educational and training courses. We help learners progress from introductory computer skills to advanced professional expertise through flexible, practical learning. Our courses respond to current industry needs and combine supportive instruction with project-based, hands-on activities. We aim to be a trusted choice for IT training in Lahore and Pakistan, known for excellence, integrity, and a welcoming learning environment.";
 
-const heroSlides = [
+type HeroSlide = {
+  desktop: string;
+  tablet?: string;
+  mobile?: string;
+  imageAlt: string;
+};
+
+// Only 21:9 desktop artwork exists for now; tablet/mobile fall back to it.
+// Add `tablet` / `mobile` here later if dedicated artwork is created.
+const heroSlides: HeroSlide[] = [
   {
     desktop: MainDesktop,
-    tablet: MainTablet,
-    mobile: MainMobile,
+    // tablet: MainTablet,
+    // mobile: MainMobile,
     imageAlt: "Kanzul Islam IT training courses",
   },
   {
     desktop: FullStackDesktop,
-    tablet: FullStackTablet,
-    mobile: FullStackMobile,
+    // tablet: FullStackTablet,
+    // mobile: FullStackMobile,
     imageAlt: "Full Stack Development course: online and physical classes",
   },
   {
     desktop: ArtificialIntelDesktop,
-    tablet: ArtificialIntelTablet,
-    mobile: ArtificialIntelMobile,
+    // tablet: ArtificialIntelTablet,
+    // mobile: ArtificialIntelMobile,
     imageAlt: "Artificial Intelligence course",
   },
   {
     desktop: ITFundDesktop,
-    tablet: ITFundTablet,
-    mobile: ITFundMobile,
+    // tablet: ITFundTablet,
+    // mobile: ITFundMobile,
     imageAlt: "IT Fundamentals course",
   },
 ];
@@ -112,16 +122,16 @@ const programs = [
     description: "Develop Artificial Intelligence softwares. ",
     image: ArtificialIntelMobile || 
       "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80",
-    icon: ShieldCheck,
-    label: "Security",
+    icon: Bot,
+    label: "AI Development",
   },
   {
     title: "Essential softwares.",
     description: "Get hands on experience on essentials daily life application softwares.",
     image: ITFundMobile || 
       "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
-    icon: Network,
-    label: "Networking",
+    icon: LayoutDashboard,
+    label: "Essentials Softwares",
   },
   {
     title: "Cloud Computing",
@@ -196,7 +206,7 @@ function SectionHeading({
   description?: string;
 }) {
   return (
-    <div className="mx-auto mb-10 max-w-2xl text-center">
+    <div className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">
       <p className={cn("mb-3", ui.eyebrow)}>{eyebrow}</p>
       <h2 className={ui.heading}>{title}</h2>
       {description && <p className={ui.lead}>{description}</p>}
@@ -225,14 +235,41 @@ export default function HomePage() {
     return () => window.clearTimeout(timer);
   }, [activeSlide, reduceMotion]);
 
+  // Hero fills from its top edge (below the header) to the bottom of the viewport.
+  // Measured so it stays correct when the announcement bar is dismissed or wraps.
+  const heroRef = useRef<HTMLElement>(null);
+  const [heroTop, setHeroTop] = useState(0);
+
+  useLayoutEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const measure = () => {
+      setHeroTop(Math.round(hero.getBoundingClientRect().top + window.scrollY));
+    };
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(document.body);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
   const activeImage = heroSlides[activeSlide];
 
   return (
-    <div className="overflow-hidden">
-      {/* Hero fills viewport below site chrome; object-contain keeps full image uncropped */}
+    <div className="overflow-x-clip">
+      {/* Hero: edge-to-edge, from below the header to the bottom of the screen */}
       <section
+        ref={heroRef}
         aria-label="Kanzul Islam highlights"
-        className="relative isolate flex w-full items-center justify-center bg-background h-[calc(100dvh-7.5rem)]"
+        // < lg: box matches the 21:9 artwork so the full image shows (no cropping).
+        // lg+: fills from below the header to the bottom of the screen.
+        style={{ "--hero-h": `max(24rem, calc(100dvh - ${heroTop}px))` } as CSSProperties}
+        className="relative isolate aspect-[21/9] w-full overflow-hidden bg-muted lg:aspect-auto lg:h-[var(--hero-h)]"
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -241,16 +278,16 @@ export default function HomePage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.55 }}
-            className="flex h-full w-full items-center justify-center"
+            className="absolute inset-0"
           >
-            <picture className="flex h-full w-full items-center justify-center">
+            <picture className="block size-full">
               <source media="(min-width: 1024px)" srcSet={activeImage.desktop} />
-              <source media="(min-width: 768px)" srcSet={activeImage.tablet} />
+              <source media="(min-width: 768px)" srcSet={activeImage.tablet ?? activeImage.desktop} />
               <img
-                src={activeImage.mobile}
+                src={activeImage.mobile ?? activeImage.desktop}
                 alt={activeImage.imageAlt}
                 decoding="async"
-                className="max-h-full max-w-full object-contain"
+                className="size-full object-cover object-center"
               />
             </picture>
           </motion.div>
@@ -260,22 +297,22 @@ export default function HomePage() {
           type="button"
           aria-label="Previous image"
           onClick={showPreviousSlide}
-          className="absolute left-2 top-1/2 z-10 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-secondary text-white shadow-lg transition-all hover:scale-110 hover:bg-secondary/90 focus-visible:outline-none sm:left-6 sm:size-12"
+          className="absolute left-2 top-1/2 z-10 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/90 text-white shadow-lg transition-all hover:scale-110 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:left-4 sm:size-10 lg:left-6 lg:size-12"
         >
-          <ChevronLeft aria-hidden="true" className="size-5 sm:size-6" />
+          <ChevronLeft aria-hidden="true" className="size-4 sm:size-5 lg:size-6" />
         </button>
         <button
           type="button"
           aria-label="Next image"
           onClick={showNextSlide}
-          className="absolute right-2 top-1/2 z-10 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-secondary text-white shadow-lg transition-all hover:scale-110 hover:bg-secondary/90 focus-visible:outline-none sm:right-6 sm:size-12"
+          className="absolute right-2 top-1/2 z-10 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/90 text-white shadow-lg transition-all hover:scale-110 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:right-4 sm:size-10 lg:right-6 lg:size-12"
         >
-          <ChevronRight aria-hidden="true" className="size-5 sm:size-6" />
+          <ChevronRight aria-hidden="true" className="size-4 sm:size-5 lg:size-6" />
         </button>
       </section>
 
       {/* Mode of training */}
-      <section id="training" className={ui.sectionAlt}>
+      <section id="training" className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Flexible learning"
@@ -294,7 +331,7 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ delay: index * 0.08, duration: 0.4 }}
-                  className={cn("group transform-gpu p-6", ui.card)}
+                  className={cn("group transform-gpu p-5 sm:p-6", ui.card)}
                 >
                   <span className={cn("mb-5", ui.iconBox)}>
                     <Icon aria-hidden="true" className="size-5" />
@@ -309,9 +346,10 @@ export default function HomePage() {
       </section>
 
       {/* Mission and vision — half / half, tops aligned */}
-      <section className="bg-background px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
-          <div className="relative h-[50dvh] w-full overflow-hidden rounded-3xl bg-muted shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] md:h-[calc(100dvh-8rem)]">
+      <section className="bg-background px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 md:grid-cols-2 lg:gap-12">
+          {/* Fixed aspect ratio: same proportions on every screen; width is capped by max-w-7xl */}
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl bg-muted md:sticky md:top-24 md:max-w-none shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] sm:aspect-square lg:aspect-[11/10]">
             <img
               src={DirectorsImage}
               alt="Kanzul Islam director"
@@ -341,7 +379,7 @@ export default function HomePage() {
         </div>
       </section>
       {/* Programs / what we provide */}
-      <section className={ui.sectionAlt}>
+      <section className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Explore your next skill"
@@ -349,7 +387,7 @@ export default function HomePage() {
             description="Explore practical training paths across technology and professional development."
           />
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {programs.map((program, index) => {
               const Icon = program.icon;
 
@@ -360,7 +398,7 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ delay: index * 0.07, duration: 0.4 }}
-                  className={cn("group transform-gpu overflow-hidden", ui.card)}
+                  className="group flex transform-gpu flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_40px_-20px_rgba(65,105,225,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_26px_56px_-20px_rgba(65,105,225,0.45)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
@@ -369,7 +407,6 @@ export default function HomePage() {
                       loading="lazy"
                       className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                     <span className={cn("absolute left-4 top-4 shadow-lg", ui.badge)}>
                       {program.label}
                     </span>
@@ -378,16 +415,26 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  <div className="p-5">
-                    <h3 className={cn("text-lg", ui.cardTitle)}>{program.title}</h3>
-                    <p className={cn("mt-2", ui.cardMuted)}>{program.description}</p>
-                    <Link
-                      to="/courses"
-                      className={cn("mt-4 inline-flex items-center gap-1 text-sm font-semibold", ui.linkOnDark)}
-                    >
-                      Learn more
-                      <ArrowUpRight aria-hidden="true" className="size-4" />
-                    </Link>
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-semibold text-foreground">{program.title}</h3>
+                    <p className="mb-5 mt-2 text-sm leading-6 text-muted-foreground">{program.description}</p>
+
+                    {/* Actions pinned to the card bottom so buttons line up across cards */}
+                    <div className="mt-auto flex items-center gap-3 border-t border-border pt-5">
+                      <Link
+                        to="/contact"
+                        className="inline-flex flex-1 items-center justify-center rounded-full bg-secondary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+                      >
+                        Apply
+                      </Link>
+                      <Link
+                        to="/courses"
+                        className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-secondary/40 px-2 py-3 text-sm font-semibold text-secondary transition-colors hover:bg-secondary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+                      >
+                        Learn more
+                        <ArrowUpRight aria-hidden="true" className="size-4" />
+                      </Link>
+                    </div>
                   </div>
                 </motion.article>
               );
@@ -397,7 +444,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className={ui.section}>
+      <section className={cn(ui.section, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Learner stories"
@@ -405,7 +452,7 @@ export default function HomePage() {
             description="Read about learners’ experiences with practical IT training at KanzulIslam."
           />
 
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((testimonial, index) => (
               <motion.figure
                 key={index}
@@ -413,10 +460,10 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ delay: index * 0.08, duration: 0.4 }}
-                className={cn("transform-gpu p-6 sm:p-7", ui.card)}
+                className={cn("transform-gpu p-6 sm:p-7", index === 2 && "sm:col-span-2 lg:col-span-1", ui.card)}
               >
                 <Quote aria-hidden="true" className="size-7 text-white" />
-                <blockquote className="mt-5 min-h-16 leading-7 text-white">
+                <blockquote className="mt-4 text-sm leading-7 text-white sm:mt-5 sm:text-base">
                   “{testimonial.quote}”
                 </blockquote>
                 <figcaption className="mt-6 pt-4">
@@ -430,18 +477,18 @@ export default function HomePage() {
       </section>
 
       {/* Who we are / partners */}
-      <section id="who-we-are" className={cn(ui.sectionAlt, "lg:py-24")}>
+      <section id="who-we-are" className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-24")}>
         <div className="mx-auto max-w-7xl text-center">
           <p className={cn("mb-3", ui.eyebrow)}>Who we are</p>
           <h2 className={ui.headingSm}>Built through collaboration</h2>
-          <p className="mx-auto mt-4 max-w-2xl leading-7 text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
             We value the organizations and communities that help make learning
             and professional growth possible.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10 sm:gap-4">
             {partners.map((partner) => {
-              const tileClass = cn("group transform-gpu", ui.partnerTile);
+              const tileClass = cn("group transform-gpu", ui.partnerTile, "h-20 w-[calc(50%-0.375rem)] sm:h-24 sm:w-52");
               const logo = (
                 <img
                   src={partner.logo}

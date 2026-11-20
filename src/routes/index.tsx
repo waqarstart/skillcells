@@ -6,6 +6,7 @@ import CourseDetail from "@/components/layout/CourseDetail";
 import Fee from "@/pages/ClassSchedule";
 import IndustryExperts from "@/pages/IndustryExperts";
 import HomePage from "@/pages/HomePage";
+import MeetOurExperts from "@/pages/MeetOurExperts";
 import { Route, Routes } from "react-router";
 
 
@@ -19,6 +20,7 @@ const AppRoutes = () => {
            <Route path="/courses/:slug" element={<CourseDetail />} />
            <Route path="/class-schedule" element={<Fee />} />
            <Route path="/industry-experts" element={<IndustryExperts />} />
+           <Route path="/meet-out-experts" element={<MeetOurExperts />} />
            <Route path="/contact" element={<ContactUs />} />
         </Route>
     </Routes>

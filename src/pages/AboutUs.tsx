@@ -1,12 +1,13 @@
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, Award, Check } from "lucide-react";
 import { Link } from "react-router";
-import DirectorsImage from "../assets/directorsImage.jpg";
+import DirectorsImage from "../assets/directorsImage3.jpg";
 import QuickInquiry from "@/components/layout/QuickInquiry";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
+import AboutUsHeroImage from '../assets/AboutUsHeroImg.jpg';
 
-const aboutHeroImage =
+const aboutHeroImage = AboutUsHeroImage || 
   "https://images.unsplash.com/photo-1719159381981-1327b22aff9b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
 
 const outcomes = [
@@ -49,17 +50,17 @@ export default function AboutUs() {
 
   return (
     <div className="overflow-hidden">
-      <section className="relative isolate bg-background px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
+      <section className="relative isolate bg-background px-4 pb-14 pt-8 sm:px-6 lg:px-8 lg:pb-20 lg:pt-10">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-8 md:grid-cols-2 lg:gap-12">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex min-h-[50dvh] flex-col justify-center md:min-h-[calc(100dvh-8rem)]"
+            className="flex flex-col justify-start"
           >
             <p className={cn("mb-4", ui.eyebrow)}>About Kanzul Islam</p>
             <h1 className="max-w-xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
-              Why Kanzul Islam is chosen as the best training institute ?
+              Why Chose Kanzul Islam ?
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
               For the last 16 years, Kanzul Islam has commanded veneration not only in Pakistan as a perfectionist in Computer Network Education, but also throughout the subcontinent. We provide an encouraging environment with special emphasis on hands-on training. Our aim is to highlight the inner potential of students in order to develop their competitive character needed to face the professional world.
@@ -75,11 +76,11 @@ export default function AboutUs() {
             </div>
           </motion.div>
 
-          <div className="relative h-[50dvh] w-full overflow-hidden rounded-3xl bg-muted shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] md:h-[calc(100dvh-8rem)]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[22rem] rounded-3xl bg-muted shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] ring-1 ring-black/5">
             <img
               src={aboutHeroImage}
               alt="Students learning in a computer lab"
-              className="absolute inset-0 size-full object-cover object-center"
+              className="absolute inset-0 h-full w-full object-cover object-center"
               loading="eager"
             />
           </div>
@@ -115,6 +116,9 @@ export default function AboutUs() {
               </p>
               <p>
                 Being the trend setter in technical skill training, Kanzul Islam has great training packages and instruction methodology for individuals, foreign students, corporate firms, and universities.
+              </p>
+              <p>
+                To support busy learners who prefer studying at their own pace, we also provide flexible, one-on-one online training programs tailored to individual schedules and skill levels. Setting the benchmark in IT and technical skill development, Kanzul Islam delivers comprehensive training packages and proven teaching methodologies designed for students and learners. 
               </p>
             </div>
           </motion.div>

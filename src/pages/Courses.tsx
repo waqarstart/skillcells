@@ -6,13 +6,14 @@ import QuickInquiry from "@/components/layout/QuickInquiry";
 import FullStackTablet from "@/assets/fullStackTablet.jpeg";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export default function Courses() {
   const reduceMotion = useReducedMotion();
 
   return (
     <div className="overflow-hidden">
-      <section className="relative isolate bg-background px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      {/* <section className="relative isolate bg-background px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
@@ -42,7 +43,7 @@ export default function Courses() {
             />
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className={cn(ui.sectionAlt, "py-16 lg:py-4")}>
         <div className="mx-auto max-w-7xl">
@@ -69,35 +70,40 @@ export default function Courses() {
               >
                 <Link
                   to={`/courses/${course.slug}`}
-                  className={cn(
-                    "group flex h-full flex-col overflow-hidden focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30",
-                    ui.card,
-                  )}
+                  className="group flex h-full transform-gpu flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_40px_-20px_rgba(65,105,225,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_26px_56px_-20px_rgba(65,105,225,0.45)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary/30"
                 >
-                  <div className="relative h-48 overflow-hidden bg-secondary/20 sm:h-52">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <img
                       src={course.image}
                       alt={course.imageAlt}
                       loading="lazy"
                       className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
-                    <span className={cn("absolute bottom-4 left-4 shadow-sm", ui.badge)}>
+                    <span className={cn("absolute left-4 top-4 shadow-lg", ui.badge)}>
                       {course.category}
                     </span>
                   </div>
 
-                  <div className="flex flex-1 flex-col p-6 sm:p-7">
-                    <h3 className="text-xl font-semibold tracking-tight text-card-foreground transition-colors group-hover:text-white/90">
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {course.title}
                     </h3>
-                    <p className={cn("mt-3 flex-1", ui.cardMuted)}>
+                    <p className="mb-5mt-2 text-sm leading-6 text-muted-foreground">
                       {course.shortIntro}
                     </p>
-                    <span className={cn("mt-6 inline-flex items-center gap-2 text-sm font-semibold", ui.linkOnDark)}>
-                      View course details
-                      <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </span>
+
+                    <div className="flex flex-cols gap-2 mt-auto border-t border-border pt-5">
+                      <Link
+                        to="/contact"
+                        className="inline-flex flex-1 items-center justify-center rounded-full bg-secondary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+                      >
+                        Apply
+                      </Link>
+                      <span className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-secondary/40 px-2 py-2 text-sm font-semibold text-secondary transition-colors group-hover:bg-secondary/10">
+                        View course details
+                        <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      </span>
+                    </div>
                   </div>
                 </Link>
               </motion.article>
