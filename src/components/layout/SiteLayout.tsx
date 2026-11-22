@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const SiteLayout = () => {
   return (
-    <div className={cn("flex min-h-screen flex-col", ui.page)}>
+    <div className={cn("flex min-h-screen flex-col pb-16 md:pb-0", ui.page)}>
       <AnnouncementBar />
       <Navbar />
 

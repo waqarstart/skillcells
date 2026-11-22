@@ -1,30 +1,11 @@
 import { motion, useReducedMotion } from "motion/react";
-import { useState, type FormEvent } from "react";
-import { ArrowUpRight, Clock, MapPin, MessageCircle, MonitorPlay } from "lucide-react";
-import ContactInquiry from "../../assets/contactInquiry.png";
+import { ArrowUpRight, CircleAlert, CircleCheck, LoaderCircle, MessageCircle } from "lucide-react";
+import { usePage } from "@/lib/content";
+import { assetUrl } from "@/lib/api";
+import { iconFor } from "@/lib/icons";
+import { honeypotProps, useInquiry } from "@/lib/useInquiry";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
-
-const courseOptions = [
-  "Artificial Intelligence",
-  "Full Stack Development",
-  "Web Designing",
-  "DevOps",
-  "SEO & Digital Marketing",
-  "Graphic Designing & Video Editing",
-  "WordPress Development",
-  "Shopify Development",
-  "Software Quality Assurance (SQA)",
-  "UI/UX Design with Figma",
-  "Business Analysis",
-  "Typing Course",
-];
-
-const highlights = [
-  { icon: Clock, text: "Reply within 24 hours" },
-  { icon: MonitorPlay, text: "Online & physical classes" },
-  { icon: MapPin, text: "Campus in Lahore, Pakistan" },
-];
 
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-border bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20";
@@ -33,24 +14,10 @@ const labelClass = "block min-w-0 text-sm font-medium text-foreground";
 
 const QuickInquiry = () => {
   const reduceMotion = useReducedMotion();
-  const [whatsAppLink, setWhatsAppLink] = useState("");
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const values = new FormData(event.currentTarget);
-    const message = [
-      "Kanzul Islam course inquiry",
-      `Name: ${values.get("name")}`,
-      `Email: ${values.get("email")}`,
-      `Phone: ${values.get("phone")}`,
-      `Course: ${values.get("course")}`,
-      `Message: ${values.get("message")}`,
-    ].join("\n");
-
-    setWhatsAppLink(
-      `https://wa.me/923154752910?text=${encodeURIComponent(message)}`,
-    );
-  }
+  const q = usePage("home").quickInquiry ?? {};
+  const courseOptions = (q.courseOptions ?? []) as string[];
+  const highlights = (q.highlights ?? []) as { icon?: string; text: string }[];
+  const { status, message, onSubmit, sending } = useInquiry("quick-inquiry");
 
   return (
     <section className="bg-muted/50 px-4 py-10 sm:px-6 lg:px-8 lg:py-8">
@@ -65,7 +32,7 @@ const QuickInquiry = () => {
         {/* Image panel */}
         <div className="relative isolate flex min-h-64 flex-col justify-end overflow-hidden p-6 text-white sm:min-h-80 sm:p-8 lg:min-h-0">
           <img
-            src={ContactInquiry}
+            src={assetUrl(q.image)}
             alt=""
             aria-hidden="true"
             className="absolute inset-0 -z-20 size-full object-cover"
@@ -76,34 +43,36 @@ const QuickInquiry = () => {
           />
 
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
-            Admissions open
+            {q.panelEyebrow}
           </p>
           <h3 className="mt-2 text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
-            Start your IT career with expert guidance.
+            {q.panelTitle}
           </h3>
           <ul className="mt-5 space-y-2.5">
-            {highlights.map(({ icon: Icon, text }) => (
+            {highlights.map(({ icon, text }) => {
+              const Icon = iconFor(icon);
+              return (
               <li key={text} className="flex items-center gap-2.5 text-sm text-white/90">
                 <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-white/15 backdrop-blur">
                   <Icon aria-hidden="true" className="size-3.5" />
                 </span>
                 {text}
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
 
         {/* Form panel */}
         <div className="flex flex-col p-6 sm:p-8 lg:p-10">
-          <p className={ui.eyebrow}>Quick inquiry</p>
+          <p className={ui.eyebrow}>{q.eyebrow}</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Tell us what you’re looking for.
+            {q.title}
           </h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Fill in the form and continue on WhatsApp to send your inquiry to our team.
-          </p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{q.description}</p>
 
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-1 flex-col gap-4">
+          <form onSubmit={onSubmit} className="relative mt-6 flex flex-1 flex-col gap-4">
+            <input {...honeypotProps} />
             <div className="grid gap-4 sm:grid-cols-2">
               <label className={labelClass}>
                 Full name
@@ -140,36 +109,35 @@ const QuickInquiry = () => {
               />
             </label>
 
-            {whatsAppLink ? (
-              <div role="status" className="flex flex-col gap-3 rounded-xl border border-secondary/20 bg-secondary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">Your inquiry is ready.</p>
-                  <p className="text-xs text-muted-foreground">Continue to WhatsApp to send it to our team.</p>
-                </div>
-                <a
-                  href={whatsAppLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90"
-                >
-                  Continue in WhatsApp <ArrowUpRight aria-hidden="true" className="size-4" />
-                </a>
-              </div>
-            ) : (
-              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <MessageCircle aria-hidden="true" className="size-3.5" />
-                  Your details are only used to reply to your inquiry.
-                </p>
-                <button
-                  type="submit"
-                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
-                >
-                  Send inquiry
-                  <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </button>
+            {status === "success" && (
+              <div role="status" className="flex items-start gap-3 rounded-xl border border-secondary/20 bg-secondary/5 p-4">
+                <CircleCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-secondary" />
+                <p className="text-sm font-semibold text-foreground">{message}</p>
               </div>
             )}
+            {status === "error" && (
+              <div role="alert" className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+                <CircleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-destructive" />
+                <p className="text-sm font-medium text-foreground">{message}</p>
+              </div>
+            )}
+
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <MessageCircle aria-hidden="true" className="size-3.5" />
+                Your details are only used to reply to your inquiry.
+              </p>
+              <button
+                type="submit"
+                disabled={sending}
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 disabled:opacity-70"
+              >
+                {sending ? "Sending…" : q.buttonText}
+                {sending
+                  ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
+                  : <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />}
+              </button>
+            </div>
           </form>
         </div>
       </motion.div>

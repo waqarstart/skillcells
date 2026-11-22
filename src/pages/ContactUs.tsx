@@ -1,54 +1,31 @@
-import { useState, type FormEvent } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, CircleAlert, CircleCheck, LoaderCircle, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { usePage } from "@/lib/content";
+import { assetUrl } from "@/lib/api";
+import { honeypotProps, useInquiry } from "@/lib/useInquiry";
+import Rich from "@/components/shared/Rich";
+import SmartLink from "@/components/shared/SmartLink";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router";
 
-const courseOptions = [
-  "Artificial Intelligence",
-  "Full Stack Development",
-  "Web Designing",
-  "DevOps",
-  "SEO & Digital Marketing",
-  "Graphic Designing & Video Editing",
-  "WordPress Development",
-  "Shopify Development",
-  "Software Quality Assurance (SQA)",
-  "UI/UX Design with Figma",
-  "Business Analysis",
-  "Typing Course",
-];
-
-const address =
-  "Building no 58-A, Street 6 Rizwan Park Near Shezan Factory Bund Road Lahore.";
-const contactEmail = "waqar.rehmat1993@gmail.com";
-const mapQuery = encodeURIComponent(`${address}, Pakistan`);
-const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`;
-const mapOpenUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-const contactHeroImage =
-  "https://plus.unsplash.com/premium_photo-1661763911173-f2f7becc70b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+/** "0315-4831393" -> "tel:+923154831393" */
+const telHref = (n: string) => {
+  const d = n.replace(/[^\d+]/g, "");
+  return `tel:${d.startsWith("+") ? d : d.startsWith("0") ? `+92${d.slice(1)}` : `+${d}`}`;
+};
 
 export default function ContactUs() {
   const reduceMotion = useReducedMotion();
-  const [whatsAppLink, setWhatsAppLink] = useState("");
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const values = new FormData(event.currentTarget);
-    const message = [
-      "Kanzul Islam course inquiry",
-      `Name: ${values.get("name")}`,
-      `Email: ${values.get("email")}`,
-      `Phone: ${values.get("phone")}`,
-      `Course: ${values.get("course")}`,
-      `Message: ${values.get("message")}`,
-    ].join("\n");
-
-    setWhatsAppLink(
-      `https://wa.me/923154752910?text=${encodeURIComponent(message)}`,
-    );
-  }
+  const page = usePage("contact");
+  const hero = page.hero ?? {};
+  const info = page.info ?? {};
+  const form = page.form ?? {};
+  const courseOptions = (form.courseOptions ?? []) as string[];
+  const phones = ((info.phones ?? []) as { number: string }[]).filter((p) => p.number);
+  const mapQuery = encodeURIComponent(info.mapQuery ?? "");
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`;
+  const mapOpenUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+  const { status, message, onSubmit, sending } = useInquiry("contact-page", form.successMessage);
 
   return (
     <div className="overflow-hidden">
@@ -60,27 +37,24 @@ export default function ContactUs() {
             transition={{ duration: 0.5 }}
             className="flex flex-col justify-start"
           >
-            <p className={cn("mb-4", ui.eyebrow)}>About Kanzul Islam</p>
+            <p className={cn("mb-4", ui.eyebrow)}>{hero.eyebrow}</p>
             <h1 className="max-w-xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
-              Let's plan your next move!
+              {hero.title}
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-              Whether you are starting your journey in IT or looking to advance your technical expertise, our admissions team at Kanzul Islam is ready to guide you. Reach out today to explore our hands-on courses, flexible class schedules, and personalized career pathways. Connect with us via phone, email, or visit our campus to take the first confident step toward your professional future.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/courses" className={cn("group", ui.button)}>
-                Explore our courses
-                <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-              <Link to="/contact" className={ui.buttonGhost}>
-                Talk to our team
-              </Link>
-            </div>
+            <Rich html={hero.text} className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8" />
+            {hero.primaryLabel && (
+              <div className="mt-8 flex flex-wrap gap-4">
+                <SmartLink to={hero.primaryUrl} className={cn("group", ui.button)}>
+                  {hero.primaryLabel}
+                  <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </SmartLink>
+              </div>
+            )}
           </motion.div>
 
           <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full md:min-h-[22rem] rounded-3xl bg-muted shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] ring-1 ring-black/5">
             <img
-              src={contactHeroImage}
+              src={assetUrl(hero.image)}
               alt="Students learning in a computer lab"
               className="absolute inset-0 h-full w-full object-cover object-center"
               loading="eager"
@@ -98,8 +72,8 @@ export default function ContactUs() {
             className="flex flex-col gap-6"
           >
             <div>
-              <p className={ui.eyebrow}>Get in touch</p>
-              <h2 className={cn("mt-3", ui.headingSm)}>We’re here to help.</h2>
+              <p className={ui.eyebrow}>{info.eyebrow}</p>
+              <h2 className={cn("mt-3", ui.headingSm)}>{info.title}</h2>
             </div>
 
             <div className="space-y-4">
@@ -114,13 +88,13 @@ export default function ContactUs() {
                 </span>
                 <span>
                   <span className={cn("block", ui.cardTitle)}>Visit us</span>
-                  <span className={cn("mt-1 block", ui.cardMuted)}>{address}</span>
+                  <span className={cn("mt-1 block", ui.cardMuted)}>{info.address}</span>
                 </span>
                 <ArrowUpRight aria-hidden="true" className="ml-auto size-4 shrink-0 text-card-foreground/60 transition-colors group-hover:text-white" />
               </a>
 
               <a
-                href={`mailto:${contactEmail}`}
+                href={`mailto:${info.email}`}
                 className={cn("group flex gap-4 p-5", ui.card)}
               >
                 <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-white text-foreground">
@@ -128,7 +102,7 @@ export default function ContactUs() {
                 </span>
                 <span>
                   <span className={cn("block", ui.cardTitle)}>Email us</span>
-                  <span className={cn("mt-1 block break-all", ui.cardMuted)}>{contactEmail}</span>
+                  <span className={cn("mt-1 block break-all", ui.cardMuted)}>{info.email}</span>
                 </span>
                 <ArrowUpRight aria-hidden="true" className="ml-auto size-4 shrink-0 text-card-foreground/60 transition-colors group-hover:text-white" />
               </a>
@@ -141,8 +115,7 @@ export default function ContactUs() {
                   <div>
                     <h3 className={ui.cardTitle}>Call us</h3>
                     <div className={cn("mt-1 flex flex-wrap gap-x-4 gap-y-1", ui.cardMuted)}>
-                      <a href="tel:+9231548313393" className="transition-colors hover:text-white">0315-4831393</a>
-                      <a href="tel:+923154752910" className="transition-colors hover:text-white">0315-4752910</a>
+                      {phones.map((p) => <a key={p.number} href={telHref(p.number)} className="transition-colors hover:text-white">{p.number}</a>)}
                     </div>
                   </div>
                 </div>
@@ -151,7 +124,7 @@ export default function ContactUs() {
 
             <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-lg">
               <iframe
-                title="Map of Gulshan-e-Ravi, Lahore, Pakistan"
+                title={`Map of ${info.mapQuery ?? "our location"}`}
                 src={mapEmbedUrl}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -160,7 +133,7 @@ export default function ContactUs() {
             </div>
 
             <a
-              href="https://wa.me/923154752910"
+              href={`https://wa.me/${info.whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
               className={cn("group inline-flex w-fit items-center gap-2 text-sm font-semibold", ui.linkOnLight)}
@@ -178,33 +151,28 @@ export default function ContactUs() {
             className={cn("rounded-3xl p-6 sm:p-8 lg:p-10", ui.cardStatic)}
           >
             <div className="mb-8">
-              <p className={ui.cardEyebrow}>Quick inquiry</p>
+              <p className={ui.cardEyebrow}>{form.eyebrow}</p>
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-card-foreground sm:text-3xl">
-                Tell us what you’re looking for.
+                {form.title}
               </h2>
-              <p className={cn("mt-3", ui.cardMuted)}>
-                Complete the form and continue in WhatsApp to send your inquiry to our team.
-              </p>
+              <p className={cn("mt-3", ui.cardMuted)}>{form.description}</p>
             </div>
 
-            {whatsAppLink && (
-              <div role="status" className="mb-6 rounded-2xl bg-white/15 p-5">
-                <p className="font-semibold text-card-foreground">Your inquiry is ready.</p>
-                <p className={cn("mt-1", ui.cardMuted)}>
-                  Continue to WhatsApp to send it. A representative will follow up within 24 hours.
-                </p>
-                <a
-                  href={whatsAppLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn("mt-4", ui.buttonSm)}
-                >
-                  Continue in WhatsApp <ArrowUpRight aria-hidden="true" className="size-4" />
-                </a>
+            {status === "success" && (
+              <div role="status" className="mb-6 flex items-start gap-3 rounded-2xl bg-white/15 p-5">
+                <CircleCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-card-foreground" />
+                <p className="font-semibold text-card-foreground">{message}</p>
+              </div>
+            )}
+            {status === "error" && (
+              <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-white p-5 text-foreground">
+                <CircleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-destructive" />
+                <p className="text-sm font-medium">{message}</p>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={onSubmit} className="relative space-y-5">
+              <input {...honeypotProps} />
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block text-sm font-medium text-card-foreground">
                   Full name
@@ -267,8 +235,11 @@ export default function ContactUs() {
                 />
               </label>
 
-              <button type="submit" className={cn("group", ui.button)}>
-                Send inquiry <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <button type="submit" disabled={sending} className={cn("group disabled:opacity-70", ui.button)}>
+                {sending ? "Sending…" : form.buttonText}
+                {sending
+                  ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
+                  : <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />}
               </button>
             </form>
           </motion.div>

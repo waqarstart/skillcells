@@ -1,14 +1,20 @@
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Link, useParams } from "react-router";
-import { getCourseBySlug } from "@/lib/courses";
+import { usePage } from "@/lib/content";
+import { assetUrl } from "@/lib/api";
+import Rich from "@/components/shared/Rich";
 import QuickInquiry from "./QuickInquiry";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
 
 export default function CourseDetail() {
   const { slug } = useParams();
-  const course = getCourseBySlug(slug);
+  const items = (usePage("courses").courses?.items ?? []) as {
+    slug: string; category: string; title: string; shortIntro: string; image: string; imageAlt: string;
+    introduction: string; whyTitle: string; why: string; topics: string[];
+  }[];
+  const course = items.find((c) => c.slug === slug);
   const reduceMotion = useReducedMotion();
 
   if (!course) {
@@ -73,7 +79,7 @@ export default function CourseDetail() {
               transition={{ duration: 0.5, delay: reduceMotion ? 0 : 0.08 }}
               className="relative min-h-[280px] overflow-hidden rounded-[1.75rem] shadow-[0_28px_70px_-28px_rgba(65,105,225,0.4)] sm:min-h-[380px] lg:min-h-[440px]"
             >
-              <img src={course.image} alt={course.imageAlt} className="absolute inset-0 size-full object-cover" />
+              <img src={assetUrl(course.image)} alt={course.imageAlt} className="absolute inset-0 size-full object-cover" />
               <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-tr from-secondary/30 via-transparent to-white/10" />
               <span className={cn("absolute bottom-5 left-5 shadow-sm", ui.badge)}>
                 Kanzul Islam · Learn by doing
@@ -93,15 +99,11 @@ export default function CourseDetail() {
           >
             <p className={ui.eyebrow}>Course overview</p>
             <h2 className={cn("mt-3", ui.headingSm)}>Build skills for a changing industry.</h2>
-            <p className="mt-5 text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-              {course.introduction}
-            </p>
+            <Rich html={course.introduction} className="mt-5 text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8" />
 
             <div className="mt-9">
               <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{course.whyTitle}</h3>
-              <div className="mt-4 space-y-4 text-base leading-7 text-muted-foreground">
-                {course.whyParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              </div>
+              <Rich html={course.why} className="mt-4 text-base leading-7 text-muted-foreground" />
             </div>
           </motion.article>
 
@@ -114,7 +116,7 @@ export default function CourseDetail() {
           >
             <p className={ui.cardEyebrow}>What you’ll explore</p>
             <ul className="mt-6 space-y-4">
-              {course.topics.map((topic) => (
+              {(course.topics ?? []).map((topic) => (
                 <li key={topic} className="flex items-start gap-3 text-sm leading-6 text-card-foreground/90 sm:text-base">
                   <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-foreground">
                     <Check aria-hidden="true" className="size-4" />

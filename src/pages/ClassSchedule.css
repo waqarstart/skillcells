@@ -171,7 +171,86 @@
     font-size: 15px;
   }
 
+  /* Phones: turn each table row into a stacked card (no sideways scrolling) */
+  .schedule-table-wrap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .schedule-table,
+  .schedule-table tbody,
+  .schedule-table tr,
+  .schedule-table th,
+  .schedule-table td {
+    display: block;
+  }
+
   .schedule-table {
-    min-width: 1060px;
+    min-width: 0;
+  }
+
+  .schedule-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .schedule-table tbody tr,
+  .schedule-table tbody tr:nth-child(even) {
+    margin-bottom: 14px;
+    padding: 6px 16px 10px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--background);
+    box-shadow: 0 14px 34px -24px color-mix(in srgb, var(--secondary) 40%, transparent);
+  }
+
+  .schedule-table tbody th.schedule-number {
+    width: auto;
+    padding: 10px 0 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .schedule-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border);
+    text-align: right;
+  }
+
+  .schedule-table tbody td:last-child {
+    border-bottom: 0;
+  }
+
+  .schedule-table tbody td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    color: var(--muted-foreground);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .schedule-table tbody td.schedule-course {
+    display: block;
+    min-width: 0;
+    padding-top: 4px;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .schedule-table tbody td.schedule-course::before {
+    display: block;
+    margin-bottom: 2px;
   }
 }

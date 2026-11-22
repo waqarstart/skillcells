@@ -2,54 +2,19 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
+import { usePage } from "@/lib/content";
+import { assetUrl } from "@/lib/api";
 
 type Expert = {
   name: string;
   role: string;
-  experience: string;
+  experience?: string;
   about: string;
   skills: string[];
   linkedin: string;
+  /** Optional profile photo; initials are shown when omitted. */
+  photo?: string;
 };
-
-const experts: Expert[] = [
-  {
-    name: "Waqar Rehmat Ali",
-    role: "Director",
-    experience: "11+ years of experience",
-    about:
-      "Senior Software Project Manager and Product Manager who has delivered software products across diverse industries. Works closely with stakeholders and engineering teams to turn business needs into clear roadmaps and dependable delivery.",
-    skills: ["Product Management", "Agile / Scrum", "Stakeholder Management", "Risk Management", "SaaS"],
-    linkedin: "https://www.linkedin.com/in/waqar-rehmat-ali/",
-  },
-  {
-    name: "Waleed Ejaz",
-    role: "Senior Solution Architect",
-    experience: "5+ years of experience",
-    about:
-      "Full-stack engineer focused on building high-performance, scalable applications. Follows sound engineering principles and keeps pace with new languages, frameworks, and practices across the technology industry.",
-    skills: ["Full-Stack Development", "Solution Architecture", "Scalable Systems", "Software Design"],
-    linkedin: "https://www.linkedin.com/in/waleed-ejaz-07204236b/",
-  },
-  {
-    name: "Waleed Arif",
-    role: "AI / ML Engineer",
-    experience: "2+ YEARS OF EXPERIENCE",
-    about:
-      "AI engineer who builds practical, production-ready AI systems, from language-model applications to computer vision. Experienced in deploying models and serving them through reliable APIs.",
-    skills: ["Python", "PyTorch", "Hugging Face", "LLMs & RAG", "FastAPI", "Azure ML"],
-    linkedin: "https://www.linkedin.com/in/waleed1011/",
-  },
-  {
-    name: "Asad Ullah",
-    role: "Full-Stack Web Developer",
-    experience: "2+ years of experience",
-    about:
-      "Full-stack web developer building production systems across the frontend, backend, and cloud. Owns features end to end, from the user interface and API design to deployment.",
-    skills: ["React", "Next.js", "TypeScript", "Node.js / NestJS", "PostgreSQL", "AWS"],
-    linkedin: "https://www.linkedin.com/in/asadullah-mehsud/",
-  },
-];
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -69,70 +34,81 @@ function getInitials(name: string) {
 
 export default function MeetOurExperts() {
   const reduceMotion = useReducedMotion();
+  const page = usePage("experts");
+  const header = page.header ?? {};
+  const experts = (page.experts?.items ?? []) as Expert[];
 
   return (
     <div className="overflow-hidden">
       <section className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-            <p className={cn("mb-3", ui.eyebrow)}>Meet our experts</p>
-            <h1 className={ui.heading}>The people behind Kanzul Islam</h1>
-            <p className={ui.lead}>
-              Experienced professionals who guide our programs with practical, industry-focused knowledge.
-            </p>
+          <div className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">
+            <p className={cn("mb-3", ui.eyebrow)}>{header.eyebrow}</p>
+            <h1 className={ui.headingSm}>{header.title}</h1>
+            <p className={ui.lead}>{header.description}</p>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {experts.map((expert, index) => (
               <motion.article
-                key={expert.name}
+                key={`${expert.name}-${index}`}
                 initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{ delay: (index % 4) * 0.07, duration: 0.4 }}
                 className="group flex transform-gpu flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_40px_-20px_rgba(65,105,225,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_26px_56px_-20px_rgba(65,105,225,0.45)]"
               >
-                <div className="relative flex h-32 items-end bg-gradient-to-br from-primary to-secondary px-5 sm:h-36">
-                  <span
-                    aria-hidden="true"
-                    className="absolute -bottom-9 left-5 inline-flex size-[4.5rem] items-center justify-center rounded-full border-4 border-white bg-white text-2xl font-bold text-secondary shadow-lg"
-                  >
-                    {getInitials(expert.name)}
+                <div className="relative h-16 bg-gradient-to-br from-primary to-secondary">
+                  <span className="absolute -bottom-9 left-5 inline-flex size-[4.5rem] items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white text-2xl font-bold text-secondary shadow-lg">
+                    {expert.photo ? (
+                      <img
+                        src={assetUrl(expert.photo)}
+                        alt={expert.name}
+                        loading="lazy"
+                        className="size-full object-cover object-top"
+                      />
+                    ) : (
+                      <span aria-hidden="true">{getInitials(expert.name)}</span>
+                    )}
                   </span>
                 </div>
 
                 <div className="flex flex-1 flex-col p-5 pt-12">
-                  <h2 className="text-lg font-semibold text-foreground">{expert.name}</h2>
+                  <h2 className="text-lg font-semibold leading-tight text-foreground">{expert.name}</h2>
                   <p className="mt-1 text-sm font-semibold text-secondary">{expert.role}</p>
-                  <p className="mt-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    {expert.experience}
-                  </p>
+                  {expert.experience && (
+                    <p className="mt-0.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      {expert.experience}
+                    </p>
+                  )}
 
-                  <p className="mt-4 text-sm leading-6 text-muted-foreground">{expert.about}</p>
+                  <p className="mt-3 line-clamp-4 text-sm leading-6 text-muted-foreground">{expert.about}</p>
 
-                  <ul className="mt-5 flex flex-wrap gap-2" aria-label={`${expert.name} specialties`}>
-                    {expert.skills.map((skill) => (
-                      <li
-                        key={skill}
-                        className="rounded-full border border-secondary/30 bg-secondary/5 px-3 py-1 text-xs font-medium text-secondary"
-                      >
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
+                  {(expert.skills ?? []).length > 0 && (
+                    <ul className="mt-4 flex flex-wrap gap-1.5" aria-label={`${expert.name} specialties`}>
+                      {expert.skills.map((skill) => (
+                        <li
+                          key={skill}
+                          className="rounded-full border border-secondary/30 bg-secondary/5 px-2.5 py-0.5 text-xs font-medium text-secondary"
+                        >
+                          {skill}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-                  <div className="mt-auto border-t border-border pt-5">
-                    <a
+                  <div className="mt-auto pt-4">
+                    {expert.linkedin && <a
                       href={expert.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`View ${expert.name} on LinkedIn`}
-                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-secondary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
                     >
                       <LinkedInIcon className="size-4" />
                       LinkedIn
                       <ArrowUpRight aria-hidden="true" className="size-4" />
-                    </a>
+                    </a>}
                   </div>
                 </div>
               </motion.article>

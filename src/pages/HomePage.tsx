@@ -1,208 +1,22 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import {
-  ArrowUpRight,
-  Building2,
-  ChevronLeft,
-  ChevronRight,
-  Cloud,
-  Code2,
-  Globe,
-  Monitor,
-  Quote,
-  UserRound,
-  Bot,
-  LayoutDashboard
-} from "lucide-react";
-import { Link } from "react-router";
-import DirectorsImage from "../assets/directorsImage3.jpg";
-import CmcLogo from "../assets/cmc.jpeg";
-import GcsLogo from "../assets/gcsLogo.png";
-import InfoCommLogo from "../assets/ict.png";
-import StarOilLogo from "../assets/starOil.jpeg";
-import TekkDevLogo from "../assets/tekdev.jpg";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { usePage } from "@/lib/content";
+import { assetUrl } from "@/lib/api";
+import { iconFor } from "@/lib/icons";
+import Rich from "@/components/shared/Rich";
+import SmartLink from "@/components/shared/SmartLink";
 import QuickInquiry from "@/components/layout/QuickInquiry";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
-
-// import MainDesktop from '@/assets/mainDesktop.jpeg';
-import MainDesktop from '@/assets/Build Your Future in IT.jpg';
-// import MainTablet from '@/assets/mainTablet.png';
-// import MainMobile from '@/assets/mainMobile.jpeg';
-
-import FullStackDesktop from '@/assets/Full Stack Development Workspace.png'
-// import FullStackTablet from '@/assets/fullStackTablet.jpeg'
-import FullStackMobile from '@/assets/fullStackMobile.jpeg'
-
-import ArtificialIntelDesktop from '@/assets/Artificial Intelligence Learning Lab.png'
-// import ArtificialIntelTablet from '@/assets/artificialIntelTablet.jpeg'
-import ArtificialIntelMobile from '@/assets/artificialIntelMobile.jpeg'
-
-import ITFundDesktop from '@/assets/Gemini_Generated_Image_7tdy8v7tdy8v7tdy.jpg'
-// import ITFundTablet from '@/assets/itFundTablet.jpeg'
-import ITFundMobile from '@/assets/itFundMobile.jpeg'
-
-
-const mission =
-  "To empower individuals and organizations with the knowledge and skills needed to excel in the rapidly evolving field of Information Technology. We are committed to providing high-quality, comprehensive, and practical IT training programs that equip our students with the latest industry-relevant skills, tools, and technologies. Our mission is to enable our students to unlock their full potential, enhance their career prospects, and contribute to the growth of the IT industry in Pakistan and beyond. We strive to deliver exceptional training experiences through experienced instructors, state-of-the-art facilities, and hands-on learning approaches. ";
-
-const vision =
-  "Kanzul Islam is renowned worldwide for the quality of its educational and training courses. We help learners progress from introductory computer skills to advanced professional expertise through flexible, practical learning. Our courses respond to current industry needs and combine supportive instruction with project-based, hands-on activities. We aim to be a trusted choice for IT training in Lahore and Pakistan, known for excellence, integrity, and a welcoming learning environment.";
-
-type HeroSlide = {
-  desktop: string;
-  tablet?: string;
-  mobile?: string;
-  imageAlt: string;
-};
-
-// Only 21:9 desktop artwork exists for now; tablet/mobile fall back to it.
-// Add `tablet` / `mobile` here later if dedicated artwork is created.
-const heroSlides: HeroSlide[] = [
-  {
-    desktop: MainDesktop,
-    // tablet: MainTablet,
-    // mobile: MainMobile,
-    imageAlt: "Kanzul Islam IT training courses",
-  },
-  {
-    desktop: FullStackDesktop,
-    // tablet: FullStackTablet,
-    // mobile: FullStackMobile,
-    imageAlt: "Full Stack Development course: online and physical classes",
-  },
-  {
-    desktop: ArtificialIntelDesktop,
-    // tablet: ArtificialIntelTablet,
-    // mobile: ArtificialIntelMobile,
-    imageAlt: "Artificial Intelligence course",
-  },
-  {
-    desktop: ITFundDesktop,
-    // tablet: ITFundTablet,
-    // mobile: ITFundMobile,
-    imageAlt: "IT Fundamentals course",
-  },
-];
-
-const trainingModes = [
-  {
-    title: "Classroom",
-    description: "Learn together with instructor-led, in-person sessions.",
-    icon: Monitor,
-  },
-  {
-    title: "One to One",
-    description: "Get focused guidance tailored to your learning goals.",
-    icon: UserRound,
-  },
-  {
-    title: "Customer Premise",
-    description: "Build practical skills for teams and organizations.",
-    icon: Building2,
-  },
-  {
-    title: "Online Learning",
-    description: "Study remotely with flexible learning options.",
-    icon: Globe,
-  },
-];
-
-const programs = [
-  {
-    title: "Full Stack Development",
-    description: "Create modern static websites and web-apps.",
-    image: FullStackMobile || 
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
-    icon: Code2,
-    label: "Development",
-  },
-  {
-    title: "AI Development",
-    description: "Develop Artificial Intelligence softwares. ",
-    image: ArtificialIntelMobile || 
-      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=80",
-    icon: Bot,
-    label: "AI Development",
-  },
-  {
-    title: "Essential softwares.",
-    description: "Get hands on experience on essentials daily life application softwares.",
-    image: ITFundMobile || 
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
-    icon: LayoutDashboard,
-    label: "Essentials Softwares",
-  },
-  {
-    title: "Cloud Computing",
-    description: "Explore modern cloud platforms and infrastructure.",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80",
-    icon: Cloud,
-    label: "Cloud",
-  },
-];
-
-const testimonials = [
-  {
-    quote:
-      "KanzulIslam offers a great environment for learning and developing technical skills. The training sessions help make complex IT concepts easier to understand, while practical exercises provide valuable hands-on experience. It is a good choice for anyone looking to improve their knowledge and grow in the IT field.",
-    name: "Sheeraz",
-    course: "Student",
-  },
-  {
-    quote:
-      "My learning experience at KanzulIslam has been valuable and rewarding. The structured training and focus on practical skills help students understand industry concepts and build confidence. I would recommend KanzulIslam to individuals who want to strengthen their technical expertise and explore new career opportunities in IT.",
-    name: "Usman",
-    course: "Student",
-  },
-  {
-    quote:
-      "My experience with KanzulIslam has been very positive. The training approach focuses on practical knowledge, clear explanations, and industry-relevant skills. The learning environment encourages students to ask questions, gain hands-on experience, and strengthen their technical abilities. I would recommend KanzulIslam to anyone looking to enhance their IT knowledge and take the next step in their professional journey.",
-    name: "Anonymous student",
-    course: "KanzulIslam learner",
-  },
-];
-
-const partners = [
-  {
-    name: "InfoComm Technology",
-    href: "https://infocommtech.com/",
-    logo: InfoCommLogo,
-    imageClass: "object-contain p-3",
-  },
-  {
-    name: "TekkDev",
-    href: "https://www.tekkdev.com/",
-    logo: TekkDevLogo,
-    imageClass: "object-contain p-3",
-  },
-  {
-    name: "GCS",
-    href: "https://gcspvt.com/",
-    logo: GcsLogo,
-    imageClass: "object-cover",
-  },
-  {
-    name: "CMC",
-    href: "https://www.cmc.com.pk/",
-    logo: CmcLogo,
-    imageClass: "object-cover",
-  },
-  {
-    name: "Star Oil Filling Station",
-    logo: StarOilLogo,
-    imageClass: "object-contain p-2",
-  },
-];
 
 function SectionHeading({
   eyebrow,
   title,
   description,
 }: {
-  eyebrow: string;
-  title: string;
+  eyebrow?: string;
+  title?: string;
   description?: string;
 }) {
   return (
@@ -215,25 +29,30 @@ function SectionHeading({
 }
 
 export default function HomePage() {
+  const page = usePage("home");
+  const slides = ((page.carousel?.slides ?? []) as { image: string; mobileImage?: string; alt?: string; link?: string }[]).filter((s) => s.image);
+  const autoplayMs = Math.max(2, Number(page.carousel?.autoplaySeconds) || 6.5) * 1000;
+  const learn = page.learn ?? {};
+  const mv = page.missionVision ?? {};
+  const provide = page.provide ?? {};
+  const testimonials = (page.testimonials?.items ?? []) as { quote: string; name: string; role: string }[];
+  const who = page.whoWeAre ?? {};
+  const partners = (who.partners ?? []) as { name: string; logo: string; url?: string }[];
+
   const [activeSlide, setActiveSlide] = useState(0);
   const reduceMotion = useReducedMotion();
+  const count = slides.length;
+  const current = count ? activeSlide % count : 0;
 
-  const showNextSlide = () => {
-    setActiveSlide((current) => (current + 1) % heroSlides.length);
-  };
-
-  const showPreviousSlide = () => {
-    setActiveSlide(
-      (current) => (current - 1 + heroSlides.length) % heroSlides.length,
-    );
-  };
+  const showNextSlide = () => setActiveSlide((c) => (c + 1) % Math.max(count, 1));
+  const showPreviousSlide = () => setActiveSlide((c) => (c - 1 + Math.max(count, 1)) % Math.max(count, 1));
 
   useEffect(() => {
-    if (reduceMotion) return;
-  
-    const timer = window.setTimeout(showNextSlide, 6500);
+    if (reduceMotion || count < 2) return;
+    const timer = window.setTimeout(showNextSlide, autoplayMs);
     return () => window.clearTimeout(timer);
-  }, [activeSlide, reduceMotion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSlide, reduceMotion, count, autoplayMs]);
 
   // Hero fills from its top edge (below the header) to the bottom of the viewport.
   // Measured so it stays correct when the announcement bar is dismissed or wraps.
@@ -258,44 +77,49 @@ export default function HomePage() {
     };
   }, []);
 
-  const activeImage = heroSlides[activeSlide];
+  const activeImage = slides[current];
 
   return (
     <div className="overflow-x-clip">
       {/* Hero: edge-to-edge, from below the header to the bottom of the screen */}
+      {activeImage && (
       <section
         ref={heroRef}
         aria-label="Kanzul Islam highlights"
         // < lg: box matches the 21:9 artwork so the full image shows (no cropping).
         // lg+: fills from below the header to the bottom of the screen.
         style={{ "--hero-h": `max(24rem, calc(100dvh - ${heroTop}px))` } as CSSProperties}
-        className="relative isolate aspect-[21/9] w-full overflow-hidden bg-muted lg:aspect-auto lg:h-[var(--hero-h)]"
+        className="relative isolate aspect-[2/1] w-full md:aspect-[21/9] overflow-hidden bg-muted lg:aspect-auto lg:h-[var(--hero-h)]"
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={activeSlide}
+            key={current}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.55 }}
             className="absolute inset-0"
           >
-            <picture className="block size-full">
-              <source media="(min-width: 1024px)" srcSet={activeImage.desktop} />
-              <source media="(min-width: 768px)" srcSet={activeImage.tablet ?? activeImage.desktop} />
-              <img
-                src={activeImage.mobile ?? activeImage.desktop}
-                alt={activeImage.imageAlt}
-                decoding="async"
-                className="size-full object-cover object-center"
-              />
-            </picture>
+            {(() => {
+              const picture = (
+                <picture className="block size-full">
+                  <source media="(min-width: 768px)" srcSet={assetUrl(activeImage.image)} />
+                  <img
+                    src={assetUrl(activeImage.mobileImage || activeImage.image)}
+                    alt={activeImage.alt ?? ""}
+                    decoding="async"
+                    className="size-full object-cover object-center"
+                  />
+                </picture>
+              );
+              return activeImage.link ? <SmartLink to={activeImage.link} className="block size-full">{picture}</SmartLink> : picture;
+            })()}
           </motion.div>
         </AnimatePresence>
 
         <button
           type="button"
-          aria-label="Previous image"
+          aria-label="Previous image" hidden={count < 2}
           onClick={showPreviousSlide}
           className="absolute left-2 top-1/2 z-10 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/90 text-white shadow-lg transition-all hover:scale-110 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:left-4 sm:size-10 lg:left-6 lg:size-12"
         >
@@ -303,26 +127,27 @@ export default function HomePage() {
         </button>
         <button
           type="button"
-          aria-label="Next image"
+          aria-label="Next image" hidden={count < 2}
           onClick={showNextSlide}
           className="absolute right-2 top-1/2 z-10 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/90 text-white shadow-lg transition-all hover:scale-110 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:right-4 sm:size-10 lg:right-6 lg:size-12"
         >
           <ChevronRight aria-hidden="true" className="size-4 sm:size-5 lg:size-6" />
         </button>
       </section>
+      )}
 
       {/* Mode of training */}
       <section id="training" className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow="Flexible learning"
-            title="Choose how you learn"
-            description="Kanzul Islam provides practical IT education through learning formats designed for individuals, professionals, and organizations."
+            eyebrow={learn.eyebrow}
+            title={learn.title}
+            description={learn.description}
           />
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {trainingModes.map((mode, index) => {
-              const Icon = mode.icon;
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {((learn.cards ?? []) as { icon: string; title: string; description: string }[]).map((mode, index) => {
+              const Icon = iconFor(mode.icon);
 
               return (
                 <motion.article
@@ -351,8 +176,8 @@ export default function HomePage() {
           {/* Fixed aspect ratio: same proportions on every screen; width is capped by max-w-7xl */}
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl bg-muted md:sticky md:top-24 md:max-w-none shadow-[0_24px_60px_-24px_rgba(65,105,225,0.25)] sm:aspect-square lg:aspect-[11/10]">
             <img
-              src={DirectorsImage}
-              alt="Kanzul Islam director"
+              src={assetUrl(mv.image)}
+              alt="Directors"
               className="absolute inset-0 size-full object-cover object-[center_20%]"
             />
           </div>
@@ -360,20 +185,16 @@ export default function HomePage() {
           <div className="flex w-full flex-col gap-5 pt-0 text-foreground md:gap-6">
             <article>
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
-                Mission
+                {mv.missionTitle}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
-                {mission}
-              </p>
+              <Rich html={mv.mission} className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8" />
             </article>
 
             <article>
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
-                Vision
+                {mv.visionTitle}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
-                {vision}
-              </p>
+              <Rich html={mv.vision} className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8" />
             </article>
           </div>
         </div>
@@ -382,14 +203,14 @@ export default function HomePage() {
       <section className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow="Explore your next skill"
-            title="What does Kanzul Islam provide?"
-            description="Explore practical training paths across technology and professional development."
+            eyebrow={provide.eyebrow}
+            title={provide.title}
+            description={provide.description}
           />
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {programs.map((program, index) => {
-              const Icon = program.icon;
+            {((provide.cards ?? []) as { image: string; label: string; icon: string; title: string; description: string; applyLabel: string; applyUrl: string; moreLabel: string; moreUrl: string }[]).map((program, index) => {
+              const Icon = iconFor(program.icon);
 
               return (
                 <motion.article
@@ -402,7 +223,7 @@ export default function HomePage() {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
-                      src={program.image}
+                      src={assetUrl(program.image)}
                       alt=""
                       loading="lazy"
                       className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -421,19 +242,19 @@ export default function HomePage() {
 
                     {/* Actions pinned to the card bottom so buttons line up across cards */}
                     <div className="mt-auto flex items-center gap-3 border-t border-border pt-5">
-                      <Link
-                        to="/contact"
+                      <SmartLink
+                        to={program.applyUrl}
                         className="inline-flex flex-1 items-center justify-center rounded-full bg-secondary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
                       >
-                        Apply
-                      </Link>
-                      <Link
-                        to="/courses"
+                        {program.applyLabel}
+                      </SmartLink>
+                      <SmartLink
+                        to={program.moreUrl}
                         className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-secondary/40 px-2 py-3 text-sm font-semibold text-secondary transition-colors hover:bg-secondary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
                       >
-                        Learn more
+                        {program.moreLabel}
                         <ArrowUpRight aria-hidden="true" className="size-4" />
-                      </Link>
+                      </SmartLink>
                     </div>
                   </div>
                 </motion.article>
@@ -447,9 +268,9 @@ export default function HomePage() {
       <section className={cn(ui.section, "py-12 sm:py-16 lg:py-20")}>
         <div className="mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow="Learner stories"
-            title="A little progress goes a long way"
-            description="Read about learners’ experiences with practical IT training at KanzulIslam."
+            eyebrow={page.testimonials?.eyebrow}
+            title={page.testimonials?.title}
+            description={page.testimonials?.description}
           />
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -464,11 +285,11 @@ export default function HomePage() {
               >
                 <Quote aria-hidden="true" className="size-7 text-white" />
                 <blockquote className="mt-4 text-sm leading-7 text-white sm:mt-5 sm:text-base">
-                  “{testimonial.quote}”
+                  <Rich html={testimonial.quote} />
                 </blockquote>
                 <figcaption className="mt-6 pt-4">
                   <p className={ui.cardTitle}>{testimonial.name}</p>
-                  <p className={cn("mt-1", ui.cardMuted)}>{testimonial.course}</p>
+                  <p className={cn("mt-1", ui.cardMuted)}>{testimonial.role}</p>
                 </figcaption>
               </motion.figure>
             ))}
@@ -479,29 +300,26 @@ export default function HomePage() {
       {/* Who we are / partners */}
       <section id="who-we-are" className={cn(ui.sectionAlt, "py-12 sm:py-16 lg:py-24")}>
         <div className="mx-auto max-w-7xl text-center">
-          <p className={cn("mb-3", ui.eyebrow)}>Who we are</p>
-          <h2 className={ui.headingSm}>Built through collaboration</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-            We value the organizations and communities that help make learning
-            and professional growth possible.
-          </p>
+          <p className={cn("mb-3", ui.eyebrow)}>{who.eyebrow}</p>
+          <h2 className={ui.headingSm}>{who.title}</h2>
+          <Rich html={who.description} className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base" />
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10 sm:gap-4">
             {partners.map((partner) => {
               const tileClass = cn("group transform-gpu", ui.partnerTile, "h-20 w-[calc(50%-0.375rem)] sm:h-24 sm:w-52");
               const logo = (
                 <img
-                  src={partner.logo}
+                  src={assetUrl(partner.logo)}
                   alt={partner.name}
                   loading="lazy"
-                  className={`h-full w-full ${partner.imageClass}`}
+                  className="h-full w-full object-contain p-3"
                 />
               );
 
-              return partner.href ? (
+              return partner.url ? (
                 <a
                   key={partner.name}
-                  href={partner.href}
+                  href={partner.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={tileClass}

@@ -1,17 +1,11 @@
-import { ArrowUpRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { SVGProps } from "react";
 import { Link } from "react-router";
-import logo from "../../assets/logo.png";
+import { usePage } from "@/lib/content";
+import { assetUrl } from "@/lib/api";
+import Rich from "@/components/shared/Rich";
 import { ui } from "@/styles/ui";
 import { cn } from "@/lib/utils";
-
-const contactEmail = "waqar.rehmat1993@gmail.com";
-
-const footerAddress =
-  "Building no 58-A, Street 6 Rizwan Park Near Shezan Factory Bund Road Lahore.";
-const mapQuery = encodeURIComponent(footerAddress);
-const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`;
-const mapOpenUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
 function FacebookIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -45,30 +39,37 @@ function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const socialLinks = [
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/profile.php?id=61596479728017",
-    icon: FacebookIcon,
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/kanzul_islam_computer_college/",
-    icon: InstagramIcon,
-  },
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/@arstudio540",
-    icon: YouTubeIcon,
-  },
-  {
-    label: "TikTok",
-    href: "https://www.tiktok.com/@waqar_rehmat_ali?lang=en",
-    icon: TikTokIcon,
-  },
-];
+function LinkedInIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z" />
+    </svg>
+  );
+}
+
+const SOCIAL_ICONS: Record<string, { label: string; icon: (p: SVGProps<SVGSVGElement>) => React.JSX.Element }> = {
+  facebook: { label: "Facebook", icon: FacebookIcon },
+  instagram: { label: "Instagram", icon: InstagramIcon },
+  youtube: { label: "YouTube", icon: YouTubeIcon },
+  tiktok: { label: "TikTok", icon: TikTokIcon },
+  linkedin: { label: "LinkedIn", icon: LinkedInIcon },
+  twitter: { label: "X (Twitter)", icon: Globe as never },
+  whatsapp: { label: "WhatsApp", icon: MessageCircle as never },
+};
+
+/** "0315-4831393" -> "+923154831393" (Pakistan numbers); numbers already starting with + are kept. */
+const telHref = (n: string) => {
+  const digits = n.replace(/[^\d+]/g, "");
+  return `tel:${digits.startsWith("+") ? digits : digits.startsWith("0") ? `+92${digits.slice(1)}` : `+${digits}`}`;
+};
 
 export default function Footer() {
+  const f = usePage("common").footer ?? {};
+  const socials = ((f.socials ?? []) as { platform: string; url: string }[]).filter((x) => x.url);
+  const phones = ((f.phones ?? []) as { number: string }[]).filter((x) => x.number);
+  const mapQuery = encodeURIComponent(f.mapQuery ?? "");
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`;
+  const mapOpenUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
   return (
     <footer className={cn("relative isolate overflow-hidden", ui.footer)}>
       <div
@@ -76,32 +77,34 @@ export default function Footer() {
         className="pointer-events-none absolute -right-40 -top-48 -z-10 size-[30rem] rounded-full bg-primary/20 blur-[120px]"
       />
 
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-x-8 gap-y-12 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:gap-y-10 lg:px-8 lg:py-16">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-12 sm:grid-cols-2 sm:gap-y-12 sm:px-6 lg:grid-cols-4 lg:gap-x-10 lg:px-8 lg:py-16">
         {/* Column 1: brand */}
         <div className="min-w-0">
           <Link
             to="/"
-            aria-label="Kanzul Islam home"
-            className="inline-flex items-center"
+            aria-label={`${f.brandName ?? "Home"} home`}
+            className="group inline-flex items-center gap-3"
           >
-            <img
-              src={logo}
-              alt="Kanzul Islam"
-              className="h-12 w-auto object-contain object-left"
-            />
+            <span className="inline-flex size-16 shrink-0 items-center justify-center rounded-full bg-white p-1.5 shadow-lg shadow-black/15 ring-4 ring-white/20 transition-transform group-hover:scale-105">
+              <img src={assetUrl(f.logo)} alt="" className="size-full object-contain" />
+            </span>
+            <span className="text-base font-bold leading-tight tracking-tight text-footer-foreground">
+              {f.brandName}
+              <span className="block text-xs font-medium uppercase tracking-[0.18em] text-footer-foreground/70">
+                {f.brandSub}
+              </span>
+            </span>
           </Link>
 
-          <p className="mt-6 max-w-sm text-sm leading-6 text-footer-foreground/75">
-            We focus on technologies like Routing &amp; Switching, Cyber Security,
-            Cloud Computing, DevOps, Ethical Hacking, Web Development, Graphic
-            Designing, SEO, Digital Marketing, and Operating Systems.
-          </p>
+          <Rich html={f.about} className="mt-6 max-w-sm text-sm leading-6 text-footer-foreground/75" />
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            {socialLinks.map(({ label, href, icon: Icon }) => (
+            {socials.map(({ platform, url }) => {
+              const { label, icon: Icon } = SOCIAL_ICONS[platform] ?? { label: platform, icon: Globe as never };
+              return (
               <a
-                key={label}
-                href={href}
+                key={`${platform}-${url}`}
+                href={url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${label}`}
@@ -109,34 +112,31 @@ export default function Footer() {
               >
                 <Icon className="size-4" />
               </a>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Column 2: find us */}
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-footer-foreground">Contact Us</h2>
+          <h2 className="text-lg font-semibold text-footer-foreground">{f.contactTitle}</h2>
 
           <div className="mt-5 flex gap-3">
             <MapPin aria-hidden="true" className="mt-1 size-5 shrink-0 text-white" />
             <div>
-              <h3 className="font-semibold text-footer-foreground">Find Us</h3>
-              <p className="mt-2 text-sm leading-6 text-footer-foreground/75">
-                Building no 58-A, Street 6 Rizwan Park
-                <br />
-                Near Shezan Factory Bund Road Lahore.
-              </p>
+              <h3 className="font-semibold text-footer-foreground">{f.addressTitle}</h3>
+              <p className="mt-2 whitespace-pre-line text-sm leading-6 text-footer-foreground/75">{f.address}</p>
             </div>
           </div>
         </div>
 
         {/* Column 3: location map */}
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-footer-foreground">Our Location</h2>
+          <h2 className="text-lg font-semibold text-footer-foreground">{f.locationTitle}</h2>
 
           <div className="mt-5 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-lg">
             <iframe
-              title="Map of Rizwan Park, Bund Road, Lahore"
+              title={`Map of ${f.mapQuery ?? "our location"}`}
               src={mapEmbedUrl}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -155,7 +155,7 @@ export default function Footer() {
 
         {/* Column 4 (right): email, call, WhatsApp */}
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-footer-foreground">Get in touch</h2>
+          <h2 className="text-lg font-semibold text-footer-foreground">{f.touchTitle}</h2>
 
           <div className="mt-5 space-y-5">
             <div className="flex gap-3">
@@ -163,10 +163,10 @@ export default function Footer() {
               <div>
                 <h3 className="font-semibold text-footer-foreground">Email us</h3>
                 <a
-                  href={`mailto:${contactEmail}`}
+                  href={`mailto:${f.email}`}
                   className="mt-1 inline-block break-all text-sm text-footer-foreground/75 transition-colors hover:text-white"
                 >
-                  {contactEmail}
+                  {f.email}
                 </a>
               </div>
             </div>
@@ -176,38 +176,35 @@ export default function Footer() {
               <div>
                 <h3 className="font-semibold text-footer-foreground">Call us</h3>
                 <div className="mt-2 flex flex-col gap-1.5">
-                  <a
-                    href="tel:+9231548313393"
-                    className="text-sm text-footer-foreground/75 transition-colors hover:text-white"
-                  >
-                    0315-4831393
-                  </a>
-                  <a
-                    href="tel:+923154752910"
-                    className="text-sm text-footer-foreground/75 transition-colors hover:text-white"
-                  >
-                    0315-4752910
-                  </a>
+                  {phones.map((p) => (
+                    <a key={p.number} href={telHref(p.number)} className="text-sm text-footer-foreground/75 transition-colors hover:text-white">
+                      {p.number}
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
           <a
-            href="https://wa.me/923154752910"
+            href={`https://wa.me/${f.whatsappNumber}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-white/90"
+            className="mt-6 inline-flex w-full items-center justify-between gap-2 rounded-2xl bg-white px-4 py-3 text-left text-sm font-semibold text-foreground shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-white/90 sm:w-auto lg:w-full"
           >
-            <MessageCircle aria-hidden="true" className="size-4" />
-            Free consultation on WhatsApp
-            <ArrowUpRight aria-hidden="true" className="size-4" />
+            <span className="inline-flex items-center gap-2">
+              <MessageCircle aria-hidden="true" className="size-4 shrink-0" />
+              {f.whatsappLabel}
+            </span>
+            <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
           </a>
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-7xl px-4 pb-6 text-xs text-footer-foreground/55 sm:px-6 lg:px-8">
-        &copy; {new Date().getFullYear()} Kanzul Islam. All rights reserved.
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="border-t border-white/15 py-6 text-center text-xs text-footer-foreground/60 sm:text-left">
+          &copy; {new Date().getFullYear()} {f.copyright}
+        </div>
       </div>
     </footer>
   );
