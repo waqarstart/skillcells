@@ -2,7 +2,6 @@ const SERVER_API_URL:string = 'https://kanzul-islam-server.vercel.app/api/v1'
 export const API_URL: string = SERVER_API_URL as string | undefined ?? "http://localhost:5000/api/v1";
 const ORIGIN = API_URL.replace(/\/api\/v\d+\/?$/, "");
 
-/** Uploaded images are stored as `/uploads/...` — prefix them with the API origin. */
 export function assetUrl(path?: string | null): string {
   if (!path) return "";
   return /^(https?:|data:|blob:|\/\/)/.test(path) ? path : `${ORIGIN}${path.startsWith("/") ? "" : "/"}${path}`;
