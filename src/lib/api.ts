@@ -1,4 +1,3 @@
-
 const SERVER_API_URL:string = 'https://kanzul-islam-server.vercel.app/api/v1'
 export const API_URL: string = SERVER_API_URL as string | undefined ?? "http://localhost:5000/api/v1";
 const ORIGIN = API_URL.replace(/\/api\/v\d+\/?$/, "");
